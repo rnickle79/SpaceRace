@@ -80,6 +80,7 @@ public class Game extends Thread implements ActionListener {
                     case 2: scoreBoard.increaseScore2(); break;
                 }
                 increaseDifficulty();
+                GameSound.playSound("/sound/score.wav");
             }
         }
     }
