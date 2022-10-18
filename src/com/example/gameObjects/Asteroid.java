@@ -8,10 +8,10 @@ public class Asteroid extends GameObject{
     private final int speed;
     private final char direction;
 
-    public Asteroid(int x, int y, char direction) {
+    public Asteroid(int x, int y, char direction, int speed) {
         super(x, y, ASTEROID_WIDTH , ASTEROID_HEIGHT);
         this.direction = direction;
-        speed = 5;
+        this.speed = speed;
     }
 
     public boolean checkCollision(Ship player){

@@ -15,26 +15,32 @@ import java.awt.*;
 
 public class Game extends Thread implements ActionListener {
     private ArrayList<Asteroid> asteroids;
+    private ArrayList<Ship> players;
     private ScoreBoard scoreBoard;
     private GameTimer gameTimer;
     private GamePanel gamePanel;
     private Random random;
     private Ship player1;
     private Ship player2;
+    private int asteroidSpeed = ASTEROID_INIT_SPEED;
+    private char asteroidDirection = 'L';
 
     public Game() {
         initClasses();
         initWindow();
-        startGame();
+        GameSound.playMusic("/sound/Holly.wav");
     }
 
     private void initClasses(){
-        player1 = new Ship(PLAYER1_X_START);
-        player2 = new Ship(PLAYER2_X_START);
+        player1 = new Ship(PLAYER1_X_START,1);
+        player2 = new Ship(PLAYER2_X_START,2);
         scoreBoard = new ScoreBoard();
-        asteroids = new ArrayList<>();
         gameTimer = new GameTimer();
         random = new Random();
+        asteroids = new ArrayList<>();
+        players = new ArrayList<>();
+        players.add(player1);
+        players.add(player2);
     }
 
     private void initWindow(){
@@ -42,23 +48,13 @@ public class Game extends Thread implements ActionListener {
         new GameFrame(gamePanel);
     }
 
-    private void startGame(){
-        GameSound.playMusic("/sound/Holly.wav");
-        //spawnAsteroids();
-        //GameState.status = GameState.RUNNING;
-    }
-
-    private void spawnAsteroids(){
-        char direction = 'L';
-        for(int i=0; i< ASTEROID_COUNT; i++){
+    private void spawnAsteroids(int count, int speed){
+        for(int i=0; i< count; i++){
             int x = random.nextInt(SCREEN_WIDTH);
             int y = random.nextInt(SCREEN_HEIGHT - SHIP_HEIGHT *2);
-            asteroids.add(new Asteroid(x,y,direction));
-            if (direction == 'L'){
-                direction = 'R';
-            }else {
-                direction = 'L';
-            }
+            asteroids.add(new Asteroid(x, y, asteroidDirection, speed));
+            // Change direction for next spawned asteroid
+            asteroidDirection = (asteroidDirection == 'L') ? 'R' : 'L';
         }
     }
 
@@ -68,14 +64,23 @@ public class Game extends Thread implements ActionListener {
         }
     }
 
+    private void increaseDifficulty(){
+        // Increase speed for new asteroids
+        // Add an asteroid
+        asteroidSpeed++;
+        spawnAsteroids(1, asteroidSpeed);
+    }
+
     private void scoreCheck(){
-        if(player1.scored()){
-            player1.reset();
-            scoreBoard.increaseScore1();
-        }
-        if(player2.scored()){
-            player2.reset();
-            scoreBoard.increaseScore2();
+        for(Ship player: players){
+            if(player.scored()){
+                player.reset();
+                switch(player.getId()){
+                    case 1: scoreBoard.increaseScore1(); break;
+                    case 2: scoreBoard.increaseScore2(); break;
+                }
+                increaseDifficulty();
+            }
         }
     }
 
@@ -87,13 +92,11 @@ public class Game extends Thread implements ActionListener {
         scoreCheck();
         for(Asteroid asteroid: asteroids){
             asteroid.update();
-            if(asteroid.checkCollision(player1)) {
-                player1.explode();
-                GameSound.playSound("/sound/explode.wav");
-            }
-            if(asteroid.checkCollision(player2)) {
-                player2.explode();
-                GameSound.playSound("/sound/explode.wav");
+            for(Ship player: players){
+                if(asteroid.checkCollision(player)) {
+                    player.explode();
+                    GameSound.playSound("/sound/explode.wav");
+                }
             }
         }
     }
@@ -113,7 +116,8 @@ public class Game extends Thread implements ActionListener {
         player1.reset();
         player2.reset();
         asteroids.clear();
-        spawnAsteroids();
+        asteroidSpeed = ASTEROID_INIT_SPEED;
+        spawnAsteroids(ASTEROID_COUNT, asteroidSpeed);
         gameTimer.reset();
         gamePanel.requestFocusInWindow();
         GameState.status = GameState.RUNNING;

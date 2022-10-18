@@ -11,5 +11,6 @@ public class Constants {
    public static final int ASTEROID_WIDTH = 3;
    public static final int ASTEROID_HEIGHT = 3;
    public static final int ASTEROID_COUNT = 30;
+   public static final int ASTEROID_INIT_SPEED = 5;
    public static final int TIME_LIMIT = 120;
 }

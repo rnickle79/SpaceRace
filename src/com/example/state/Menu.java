@@ -32,7 +32,7 @@ public class Menu extends State {
         for(int i=0; i< 100; i++){
             int x = random.nextInt(SCREEN_WIDTH);
             int y = random.nextInt(SCREEN_HEIGHT);
-            asteroids.add(new Asteroid(x,y,direction));
+            asteroids.add(new Asteroid(x,y,direction, ASTEROID_INIT_SPEED));
             if (direction == 'L'){
                 direction = 'R';
             }else {

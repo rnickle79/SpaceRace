@@ -9,8 +9,9 @@ import java.io.InputStream;
 import java.awt.*;
 
 public class Ship extends GameObject{
-    private final int speed = 10;
     private final int xDrawOffset = 10;
+    private final int speed = 10;
+    private final int id;
     private boolean exploding;
     private boolean up;
     private boolean down;
@@ -20,8 +21,9 @@ public class Ship extends GameObject{
     BufferedImage[] explode;
     Rectangle hitbox;
 
-    public Ship(int x) {
+    public Ship(int x, int id) {
         super(x, SHIP_Y_START, SHIP_WIDTH, SHIP_HEIGHT);
+        this.id = id;
         loadSprites();
         initHitBox();
     }
@@ -121,5 +123,9 @@ public class Ship extends GameObject{
 
     public void setDown(boolean down) {
         this.down = down;
+    }
+
+    public int getId(){
+        return id;
     }
 }
