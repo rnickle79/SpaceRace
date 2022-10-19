@@ -2,9 +2,9 @@ package com.example.main;
 
 import static com.example.utils.Constants.*;
 
-import com.example.sound.GameSound;
 import com.example.gameObjects.*;
 import com.example.state.GameState;
+import com.example.sound.GameSound;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -14,21 +14,22 @@ import javax.swing.*;
 import java.awt.*;
 
 public class Game extends Thread implements ActionListener {
+    private int asteroidSpeed = ASTEROID_INIT_SPEED;
+    private char asteroidDirection = 'L';
     private ArrayList<Asteroid> asteroids;
     private ArrayList<Ship> players;
     private ScoreBoard scoreBoard;
     private GameTimer gameTimer;
     private GamePanel gamePanel;
+    private GameSound gameSound;
     private Random random;
     private Ship player1;
     private Ship player2;
-    private int asteroidSpeed = ASTEROID_INIT_SPEED;
-    private char asteroidDirection = 'L';
 
     public Game() {
         initClasses();
         initWindow();
-        GameSound.playMusic("/sound/Holly.wav");
+        gameSound.playMusic("/sound/Holly.wav");
     }
 
     private void initClasses(){
@@ -41,6 +42,7 @@ public class Game extends Thread implements ActionListener {
         players = new ArrayList<>();
         players.add(player1);
         players.add(player2);
+        gameSound = new GameSound();
     }
 
     private void initWindow(){
@@ -80,7 +82,7 @@ public class Game extends Thread implements ActionListener {
                     case 2: scoreBoard.increaseScore2(); break;
                 }
                 increaseDifficulty();
-                GameSound.playSound("/sound/score.wav");
+                gameSound.playSound("/sound/score.wav");
             }
         }
     }
@@ -96,7 +98,7 @@ public class Game extends Thread implements ActionListener {
             for(Ship player: players){
                 if(asteroid.checkCollision(player)) {
                     player.explode();
-                    GameSound.playSound("/sound/explode.wav");
+                    gameSound.playSound("/sound/explode.wav");
                 }
             }
         }

@@ -4,15 +4,12 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.InputStream;
-import java.util.Objects;
 
 public class GameSound {
 
-    public static void playMusic(String file){
+    public void playMusic(String file){
         new Thread(()-> {
-            try {
-                InputStream is = Objects.requireNonNull(GameSound.class.getResourceAsStream(file));
-                AudioInputStream stream = AudioSystem.getAudioInputStream(is);
+             try(AudioInputStream stream = AudioSystem.getAudioInputStream(getClass().getResource(file))){
                 Clip clip = AudioSystem.getClip();
                 clip.open(stream);
                 clip.loop(Clip.LOOP_CONTINUOUSLY);
@@ -23,12 +20,10 @@ public class GameSound {
 
     }
 
-    public static void playSound(String file){
+    public void playSound(String file){
         new Thread(()-> {
-            try {
+            try(AudioInputStream stream = AudioSystem.getAudioInputStream(getClass().getResource(file))){
                 Clip clip = AudioSystem.getClip();
-                InputStream is = Objects.requireNonNull(GameSound.class.getResourceAsStream(file));
-                AudioInputStream stream = AudioSystem.getAudioInputStream(is);
                 clip.open(stream);
                 clip.start();
             } catch (Exception e) {

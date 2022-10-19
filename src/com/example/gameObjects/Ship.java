@@ -5,8 +5,8 @@ import static com.example.utils.Constants.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
-import java.io.InputStream;
 import java.awt.*;
+import java.net.URL;
 
 public class Ship extends GameObject{
     private final int xDrawOffset = 10;
@@ -28,17 +28,18 @@ public class Ship extends GameObject{
         initHitBox();
     }
 
-    public void loadSprites(){
-        try(InputStream is = getClass().getResourceAsStream("/sprites/ship2.ss.png")){
-            BufferedImage img = ImageIO.read(is);
+    private void loadSprites(){
+        try {
+            URL shipURL = getClass().getResource("/sprites/ship2.ss.png");
+            BufferedImage img = ImageIO.read(shipURL);
             idle_img = img.getSubimage(0,0,32,32);
             thrust_img = img.getSubimage(32,0,32,32);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-        try(InputStream is = getClass().getResourceAsStream("/sprites/explode.ss.png")){
-           BufferedImage img = ImageIO.read(is);
+        try {
+           URL explodeURL = getClass().getResource("/sprites/explode.ss.png");
+           BufferedImage img = ImageIO.read(explodeURL);
            explode = new BufferedImage[4];
            for(int i=0; i<explode.length; i++){
                explode[i] = img.getSubimage(i*32, 0, 32,32);
@@ -46,7 +47,6 @@ public class Ship extends GameObject{
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private void initHitBox() {
@@ -70,7 +70,7 @@ public class Ship extends GameObject{
 
     }
 
-    public void explodeUpdate(){
+    private void explodeUpdate(){
         if(exploding){
             explodeIndex++;
             if(explodeIndex > 3){
@@ -85,7 +85,7 @@ public class Ship extends GameObject{
     @Override
     public void render(Graphics g) {
         if(up && !exploding) {
-            g.drawImage(thrust_img, hitbox.x -xDrawOffset, hitbox.y, w, h,null);
+            g.drawImage(thrust_img, hitbox.x - xDrawOffset, hitbox.y, w, h,null);
         } else if (exploding){
             g.drawImage(explode[explodeIndex], hitbox.x, hitbox.y, w, h, null);
             explodeUpdate();
