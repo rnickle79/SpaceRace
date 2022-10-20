@@ -7,6 +7,7 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.awt.*;
 import java.net.URL;
+import java.util.Objects;
 
 public class Ship extends GameObject{
     private final int xDrawOffset = 10;
@@ -31,7 +32,7 @@ public class Ship extends GameObject{
     private void loadSprites(){
         try {
             URL shipURL = getClass().getResource("/sprites/ship2.ss.png");
-            BufferedImage img = ImageIO.read(shipURL);
+            BufferedImage img = ImageIO.read(Objects.requireNonNull(shipURL));
             idle_img = img.getSubimage(0,0,32,32);
             thrust_img = img.getSubimage(32,0,32,32);
         } catch (IOException e) {
@@ -39,7 +40,7 @@ public class Ship extends GameObject{
         }
         try {
            URL explodeURL = getClass().getResource("/sprites/explode.ss.png");
-           BufferedImage img = ImageIO.read(explodeURL);
+           BufferedImage img = ImageIO.read(Objects.requireNonNull(explodeURL));
            explode = new BufferedImage[4];
            for(int i=0; i<explode.length; i++){
                explode[i] = img.getSubimage(i*32, 0, 32,32);
